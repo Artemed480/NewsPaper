@@ -1,0 +1,65 @@
+#Задания в Django shell
+#Задание-1
+user1 = User.objects.create_user(username='username1')
+user2 = User.objects.create_user(username='username2')
+user3 = User.objects.create_user(username='username3')
+#Задание-2
+author1 = Author.objects.create(author_user=user1)
+author2 = Author.objects.create(author_user=user2)
+author3 = Author.objects.create(author_user=user3)
+#Задание-3
+category1 = Category.objects.create(category_name='Politics')
+category2 = Category.objects.create(category_name='Celebrities')
+category3 = Category.objects.create(category_name='IT')
+category4 = Category.objects.create(category_name='Science')
+#Задание-4
+article1 = Post.objects.create(autor=author1, post_type='AR', post_title='Article 1', post_text='Article Text 1')
+article2 = Post.objects.create(autor=author2, post_type='AR', post_title='Article 2', post_text='Article Text 2')
+news1 = Post.objects.create(autor=author1, post_type='NW', post_title='News 1', post_text='News Text 1')
+news2 = Post.objects.create(autor=author3, post_type='NW', post_title='Новости Зеленограда', post_text='В Московской области, в городе Зеленоград началось строительства тунеля под желенодорожными путями, планируемая дата сдачи обьекта 2025 год. Данные тунель призван улучшить транспортную ситуацию в час пик, таким образом улучшив жизнь горожан')
+#Задание-5
+PostCategory.objects.create(post_through=article1, category_through=category1)
+PostCategory.objects.create(post_through=article1, category_through=category3)
+PostCategory.objects.create(post_through=article2, category_through=category4)
+PostCategory.objects.create(post_through=article2, category_through=category4)
+PostCategory.objects.create(post_through=news1, category_through=category2)
+PostCategory.objects.create(post_through=news1, category_through=category3)
+#Задание-6
+comment1 = Comment.objects.create(comment_post=article1, comment_user=user2, comment_text='Com1')
+comment2 = Comment.objects.create(comment_post=article1, comment_user=user1, comment_text='Com2')
+comment3 = Comment.objects.create(comment_post=article2, comment_user=user1, comment_text='Com3')
+comment4 = Comment.objects.create(comment_post=news1, comment_user=user2, comment_text='Com4')
+#Задание-7
+article1.like()
+article2.like()
+article1.like()
+article2.like()
+news1.like()
+news1.like()
+article1.dislike()
+news1.dislike()
+
+comment1.like()
+comment1.like()
+comment1.like()
+comment2.like()
+comment2.like()
+comment3.like()
+comment4.like()
+comment4.dislike()
+comment1.dislike()
+#Задание-8
+author1.update_rating()
+author2.update_rating()
+#Задание-9
+best_user = Author.objects.order_by('-author_rating').values('author_user__username', 'author_rating').first()
+print(f"Лучший пользователь: {best_user['author_user__username']} с рейтингом {best_user['author_rating']}")
+#Задание-10
+best_article = Post.objects.filter(post_type='AR').order_by('-rating').first()
+print('Лучшая статья:', best_article.post_data_time.strftime('%d.%m.%y %H:%M:%S'), best_article.autor.author_user.username,
+      best_article.post_title, best_article.preview(), sep='\n')
+#Задание-11
+comments = Comment.objects.filter(comment_post=best_article)
+for c in comments:
+      print(f"дата: {c.comment_data_time.strftime('%d.%m.%y %H:%M:%S')}, пользователь: {c.comment_user.username}, "
+            f"рейтинг {c.rating}, текст комментария: {c.comment_text}")
